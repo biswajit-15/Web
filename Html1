@@ -1,4 +1,4 @@
-------------------------------------------------------------------------Html--------------------------------------------------------------------
+--------------------------------------------------------------------------------------------Html-----------------------------------------------------------------------------
 /////////index.html
 <!DOCTYPE html>
 <html>
@@ -401,7 +401,7 @@ module.exports = {
   getBonusedEmployees: getBonusedEmployees
 };
 ////////////////////bonus.json and employee.json is same as callback//////////////////////////
--------------------------------------------------------------------------------function(bonus-employee)------------------------------------------------------------------
+-------------------------------------------------------------------------------function(bonus-employee)------------------------------------------------------------------------
 ////////////bonus.js/////////////////////
 const fs = require('fs');
 const path = require('path');
@@ -585,3 +585,153 @@ server.listen(3000, () => {
   console.log("Server running at http://localhost:3000/");
 });
 //http://localhost:3000/cal/?num1=10&num2=5&op=add 
+------------------------------------------------------------------- Express Loging screen ---------------------------------------------------------------------------------------------
+///////////////////////////////index.js(inside public directory)////////////////////
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simple Form</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f7f7f7;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    form {
+      background-color: white;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 300px;
+    }
+
+    label {
+      font-weight: bold;
+    }
+
+    input[type="text"],
+    input[type="email"] {
+      width: 100%;
+      padding: 8px;
+      margin: 8px 0 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    input[type="submit"] {
+      width: 100%;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    input[type="submit"]:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <form action="/submit-form" method="POST">
+    <h2>Enter Your Details</h2>
+
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="userName" required />
+
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="userEmail" required />
+
+    <input type="submit" value="Submit" />
+  </form>
+</body>
+</html>
+///////////////////////////server.js//////////////////////////
+const express = require('express');
+const app = express();
+const port = 3000;
+
+// Middleware to parse URL-encoded bodies
+app.use(express.urlencoded({ extended: true }));
+
+// Serve static files from "public" folder
+app.use(express.static('public'));
+
+// Handle form POST
+app.post('/submit-form', (req, res) => {
+  const { userName, userEmail } = req.body;
+
+  console.log('Received form data:');
+  console.log('Name:', userName);
+  console.log('Email:', userEmail);
+
+  res.send(`
+    <h2>Thank you, ${userName}!</h2>
+    <p>Your email (${userEmail}) has been received.</p>
+    <a href="/">Go back</a>
+  `);
+});
+
+app.listen(port, () => {
+  console.log(`✅ Server running at http://localhost:${port}`);
+});
+///////////////////////npm install express(if not run)/////////////////
+----------------------------------------------------------------------------------promis2------------------------------------------------------------------------------------
+////////////////index.js///////////////////////
+"use strict";
+
+const { promises: fs } = require("fs");
+const utils = require("./functions");
+
+async function main() {
+    try {
+        const [empData, bonusData] = await Promise.all([
+            fs.readFile("employees.json", "utf8"),
+            fs.readFile("bonuses.json", "utf8"),
+        ]);
+
+        const employees = JSON.parse(empData);
+        const bonuses = JSON.parse(bonusData);
+
+        const bonused = utils.getBonusedEmployees(employees, bonuses);
+        const json = JSON.stringify(bonused, null, 2);
+
+        await fs.writeFile("./output/bonusedEmployees.json", json);
+        await fs.writeFile("./output/log.txt", json);
+
+        console.log("✓ Done. Check output folder.");
+    } catch (error) {
+        console.error("Error:", error.message);
+    }
+}
+
+main();
+////////////////////////functions.js/////////////////////////////////
+module.exports.getBonusedEmployees = function (employees, bonuses) {
+    return employees.map(emp => {
+        const bonus = bonuses[emp.id] || 0;
+        return {
+            ...emp,
+            bonus
+        };
+    });
+};
+/////////////////////////employees.json///////////////////
+[
+  { "id": 1, "name": "John" },
+  { "id": 2, "name": "Alice" }
+]
+////////////////////bonuses.json///////////////////////////
+{
+  "1": 5000,
+  "2": 7000
+}
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
