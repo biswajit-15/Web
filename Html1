@@ -1,1 +1,587 @@
-s
+------------------------------------------------------------------------Html--------------------------------------------------------------------
+/////////index.html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Lab 1</title>
+  <style>
+    #box {
+      width: 50%;
+      height: 75px;
+      margin: 1em auto;
+      padding: 1.5em;
+      font: 1.5em Verdana, Helvetica, sans-serif;
+      text-align: center;
+      background-color: red;
+    }
+    .section {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<div class="section">
+  <form id="our_form">
+    <input type="text" name="foo">
+    <input type="text" name="bar">
+    <button type="submit">Click Me</button>
+    <button type="button" id="alert">Or Click Me!</button>
+  </form>
+  <div>
+    <span>Response:</span>
+    <span id="response"></span>
+  </div>
+</div>
+
+<hr>
+
+<div class="section">
+  <button id="button-1">Button 1</button>
+  <button id="button-2">Button 2</button>
+  <div id="box"><span>I am a box!</span></div>
+</div>
+
+<hr>
+
+<div class="section">
+  <button class="tags-button" id="bold-btn">&lt;b&gt; tags</button>
+  <button class="tags-button" id="italic-btn">&lt;i&gt; tags</button>
+  <button class="tags-button" id="underline-btn">&lt;u&gt; tags</button>
+  <div id="tags">
+    <b>This is inside a bold tag</b>,
+    <u>and</u>
+    <i>this is not</i>,
+    but <b><i>this</i></b> is inside <i>two tags <u>at once</u></i>!
+  </div>
+</div>
+
+<hr>
+
+<div class="section">
+  <canvas width="600" height="300" id="canvas"></canvas>
+  <br>
+  <button id="clearCanvas">Clear Canvas</button>
+</div>
+
+<script>
+/* ---------- Utility ---------- */
+
+function toggleStyle(el, styleName, value) {
+  el[styleName] = el[styleName] ? '' : value;
+}
+
+/* ---------- Form Handlers ---------- */
+
+function onFormSubmit(e) {
+  e.preventDefault();
+  const a = document.querySelector("[name='foo']").value;
+  const b = document.querySelector("[name='bar']").value;
+  document.getElementById("response").textContent = a + " " + b;
+}
+
+function formAlert() {
+  const a = document.querySelector("[name='foo']").value;
+  const b = document.querySelector("[name='bar']").value;
+  alert(`foo: ${a}, bar: ${b}`);
+}
+
+/* ---------- Box Controls ---------- */
+
+function toggleBox() {
+  const box = document.getElementById("box");
+  toggleStyle(box.style, "display", "none");
+}
+
+function rotateColors() {
+  const box = document.getElementById("box");
+  const current = box.style.backgroundColor;
+
+  if (current === "red") box.style.backgroundColor = "blue";
+  else if (current === "blue") box.style.backgroundColor = "green";
+  else box.style.backgroundColor = "red";
+}
+
+/* ---------- Tag Styling ---------- */
+
+function onTagButtonClick(e) {
+  const id = e.target.id;
+  const children = document.getElementById("tags").children;
+
+  for (let el of children) {
+    if (id === "bold-btn" && el.tagName === "B") {
+      toggleStyle(el.style, "color", "red");
+    }
+    if (id === "italic-btn" && el.tagName === "I") {
+      toggleStyle(el.style, "backgroundColor", "gray");
+    }
+    if (id === "underline-btn" && el.tagName === "U") {
+      toggleStyle(el.style, "border", "1px solid blue");
+    }
+  }
+}
+
+/* ---------- Canvas ---------- */
+
+function initCanvas() {
+  const c = document.getElementById("canvas");
+  const ctx = c.getContext("2d");
+  ctx.fillStyle = "#ddd";
+  ctx.fillRect(0, 0, c.width, c.height);
+}
+
+function randomColor() {
+  const r = Math.floor(Math.random()*256);
+  const g = Math.floor(Math.random()*256);
+  const b = Math.floor(Math.random()*256);
+  return `rgb(${r},${g},${b})`;
+}
+
+function drawBox(e) {
+  const rect = canvas.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+
+  const ctx = canvas.getContext("2d");
+  ctx.fillStyle = randomColor();
+  ctx.fillRect(x, y, Math.floor(Math.random()*150)+50, Math.floor(Math.random()*50)+50);
+}
+
+/* ---------- Bindings ---------- */
+
+document.getElementById("our_form").addEventListener("submit", onFormSubmit);
+document.getElementById("alert").addEventListener("click", formAlert);
+document.getElementById("button-1").addEventListener("click", toggleBox);
+document.getElementById("button-2").addEventListener("click", rotateColors);
+
+document.querySelectorAll(".tags-button").forEach(btn => {
+  btn.addEventListener("click", onTagButtonClick);
+});
+
+document.getElementById("canvas").addEventListener("click", drawBox);
+document.getElementById("clearCanvas").addEventListener("click", initCanvas);
+
+initCanvas();
+</script>
+
+</body>
+</html>
+/////////////handlers.js////////////////////////
+function toggleStyle(el, styleName, value) {
+  if (el[styleName]) {
+    el[styleName] = '';
+  }
+  else {
+    el[styleName] = value;
+  }
+}
+
+function onFormSubmit(e) {
+  var form = e.target;
+  e.preventDefault();
+  var first = document.getElementsByName("foo");
+  var second = document.getElementsByName("bar");
+  var a1 = first[0].value;
+  var b1 = second[0].value;
+  document.getElementById("response").textContent = a1 + " " + b1;
+}
+
+function formAlert(e) {
+  var first = document.getElementsByName("foo");
+  var second = document.getElementsByName("bar");
+  var a1 = first[0].value;
+  var b1 = second[0].value;
+  alert("foo:" + a1 + ",   bar:" + b1);
+}
+
+function toggleBox(e) {
+  var box = document.getElementById("box");
+  toggleStyle(box.style, 'display', 'none');
+}
+
+function rotateColors(e) {
+  var box = document.getElementById("box");
+  if (box.style.backgroundColor === 'red') {
+    box.style.backgroundColor = 'blue';
+  }
+  else if (box.style.backgroundColor === 'blue') {
+    box.style.backgroundColor = 'green';
+  }
+  else if (box.style.backgroundColor === 'green') {
+    box.style.backgroundColor = 'red';
+  }
+}
+
+function onTagButtonClick(event) {
+  var element = event.target;
+  var tagsEl = document.getElementById("tags");
+  var children = tagsEl.children;
+  if (element.id === 'bold-btn') {
+    for (var i = 0; i < children.length; i++) {
+      if (children[i].localName === 'b') {
+        toggleStyle(children[i].style, 'color', 'red');
+      }
+    }
+  }
+  else if (element.id === 'italic-btn') {
+    for (var i = 0; i < children.length; i++) {
+      if (children[i].localName === 'i') {
+        toggleStyle(children[i].style, 'background-color', 'gray');
+      }
+    }
+  }
+  else if (element.id === 'underline-btn') {
+    for (var i = 0; i < children.length; i++) {
+      if (children[i].localName === 'u') {
+        toggleStyle(children[i].style, 'border', '1px solid blue');
+      }
+    }
+  }
+}
+
+function initCanvas() {
+  var c = document.getElementById("canvas");
+  var ctx = c.getContext("2d");
+  ctx.fillStyle = '#ddd';
+  ctx.clearRect(0,0,600,300);
+  ctx.fillRect(0,0,600,300);
+}
+
+function randomColor() {
+  var r = (Math.random() * 256 | 0).toString(16);
+  var g = (Math.random() * 256 | 0).toString(16);
+  var b = (Math.random() * 256 | 0).toString(16);
+  return "#" + r + g + b;
+}
+
+function drawBox(e) {
+  var c = document.getElementById("canvas");
+  var ctx = c.getContext("2d");
+  if(!e.hasOwnProperty('offsetX')) {
+    e.offsetX = e.layerX - e.currentTarget.offsetLeft;
+    e.offsetY = e.layerY - e.currentTarget.offsetTop;
+  }
+  var mouseX = e.offsetX;
+  var mouseY = e.offsetY;
+  ctx.fillStyle = randomColor();
+  ctx.fillRect(mouseX, mouseY, Math.floor(Math.random()*150)+50,
+  Math.floor(Math.random()*50)+50);
+}
+////////////////attachBindings.js//////////////////
+document.getElementById('our_form').addEventListener("submit", onFormSubmit);
+document.getElementById("alert").addEventListener("click", formAlert);
+document.getElementById("button-1").addEventListener("click", toggleBox);
+document.getElementById("button-2").addEventListener("click", rotateColors);
+Array.prototype.map.call(document.getElementsByClassName("tags-button"),
+function(el) {
+  el.addEventListener("click", onTagButtonClick);
+});
+document.getElementById("canvas").addEventListener("click", drawBox);
+initCanvas();
+document.getElementById("clearCanvas").addEventListener("click", function(e) {
+  initCanvas();
+});
+----------------------------------------------------------------------------------callback------------------------------------------------------------------------------
+////////////////callback.js///////////////////
+var utils = require("./functions");
+var fs = require("fs");
+
+fs.readFile("employees.json", function(err, data) {
+  if (err) {
+    throw err;
+  }
+  var file1 = JSON.parse(data);
+  fs.readFile("bonuses.json", function(err, data) {
+    if (err) {
+      throw err;
+    }
+    var file2 = JSON.parse(data);
+    var bonusedemployees = utils.getBonusedEmployees(file1, file2);
+    var outdata = JSON.stringify(bonusedemployees);
+    fs.writeFile('bonusedEmployees.json', outdata, function(err) {
+      if (err) throw err;
+      console.log('Data written to file');
+      var logdata = [];
+      bonusedemployees.forEach(function(item) {
+        logdata.push({ fullname: item["fullname"], newsalary: item["salary"] });
+      });
+      fs.writeFile('log.txt', JSON.stringify(logdata), function(err) {
+        if (err) throw err;
+        console.log('Log Data written to file');
+      });
+    });
+  });
+});
+//////////////////functions.js///////////////////
+var getBonusedEmployees = function(employees, bonus) {
+  var bonusemployee = [];
+  employees.forEach(function(item) {
+    Object.keys(item).forEach(function(key1) {
+      if (key1 === "id") {
+        Object.keys(bonus).forEach(function(key2) {
+          if (item[key1] === key2 && bonus[key2]) {
+            bonusemployee.push({
+              id: item["id"],
+              fullname: item["name"],
+              salary: (item["salary"] + item["yearsWorking"] * 1000)
+            });
+          }
+        });
+      }
+    });
+  });
+  return bonusemployee;
+}
+
+module.exports = {
+  getBonusedEmployees: getBonusedEmployees
+};
+/////////////////////////bonuses.json////////////////////////////////
+{
+  "1": true,
+  "2": false
+}
+///////////////////////employees.js/////////////////////////////
+[
+  {
+    "id": "1",
+    "name": "John Doe",
+    "salary": 60000,
+    "yearsWorking": 5
+  }
+]
+--------------------------------------------------------------------------------------promis-1----------------------------------------------------------------------------
+/////////////////////////promise.js////////////////////////////////
+var utils = require("./functions");
+var Promise = require("bluebird");
+var fs = Promise.promisifyAll(require("fs"));
+
+var file1 = fs.readFileAsync("employees.json");
+var file2 = fs.readFileAsync("bonuses.json");
+
+Promise.all([file1, file2]).spread(function(file1, file2) {
+  file1 = JSON.parse(file1);
+  file2 = JSON.parse(file2);
+
+  var bonusedemployees = utils.getBonusedEmployees(file1, file2);
+
+  var logdata = JSON.stringify(bonusedemployees, null, 2);
+  console.log(logdata);
+
+  var file3 = fs.writeFileAsync("bonusedEmployees.json", logdata);
+  var file4 = fs.writeFileAsync("log.txt", logdata);
+
+  return Promise.all([file3, file4]).spread(function() {
+    console.log("Data Write Complete");
+  });
+});
+///////////////////////////functions.js/////////////////////////////////
+var getBonusedEmployees = function(employees, bonus) {
+  var bonusemployee = [];
+  employees.forEach(function(item) {
+    Object.keys(item).forEach(function(key1) {
+      if (key1 === "id") {
+        Object.keys(bonus).forEach(function(key2) {
+          if (item[key1] === key2 && bonus[key2]) {
+            bonusemployee.push({
+              id: item["id"],
+              fullname: item["name"],
+              salary: (item["salary"] + item["yearsWorking"] * 1000)
+            });
+          }
+        });
+      }
+    });
+  });
+  return bonusemployee;
+}
+
+module.exports = {
+  getBonusedEmployees: getBonusedEmployees
+};
+////////////////////bonus.json and employee.json is same as callback//////////////////////////
+-------------------------------------------------------------------------------function(bonus-employee)------------------------------------------------------------------
+////////////bonus.js/////////////////////
+const fs = require('fs');
+const path = require('path');
+const EMPLOYEES_FILE = path.join(__dirname, 'employees.json');
+const BONUSES_FILE = path.join(__dirname, 'bonuses.json');
+function readJSONFile(filePath) {
+    try {
+        const data = fs.readFileSync(filePath, 'utf8');
+        return JSON.parse(data);
+    } catch (error) {
+        console.error(`Error reading file ${filePath}:`, error.message);
+        throw error;
+    }
+}
+function writeJSONFile(filePath, data) {
+    try {
+        fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8');
+        console.log(`Successfully updated ${filePath}`);
+    } catch (error) {
+        console.error(`Error writing file ${filePath}:`, error.message);
+        throw error;
+    }
+}
+function processBonuses(employees, bonuses) {
+    const updatedEmployees = employees.map(employee => {
+        const employeeId = employee.id;
+               
+        if (bonuses.hasOwnProperty(employeeId)) {
+            const updatedEmployee = { ...employee };
+           
+            if (bonuses[employeeId] === true) {
+               
+                updatedEmployee.salary += 10000;
+                console.log(`Applied $10,000 bonus to ${employee.name.first} ${employee.name.last} (ID: ${employeeId})`);
+            } else if (bonuses[employeeId] === false) {
+              
+                updatedEmployee.salary += 1000;
+                console.log(`Applied $1,000 bonus to ${employee.name.first} ${employee.name.last} (ID: ${employeeId})`);
+            }
+           
+            return updatedEmployee;
+        }
+       
+      
+        return employee;
+    });
+   
+    return updatedEmployees;
+}
+function getBonusedEmployees(employees, bonuses) {
+    const bonusedEmployees = [];
+   
+    employees.forEach(employee => {
+        const employeeId = employee.id;
+       
+        if (bonuses.hasOwnProperty(employeeId) && bonuses[employeeId] === true) {
+            bonusedEmployees.push({
+                id: employee.id,
+                fullname: `${employee.name.first} ${employee.name.last}`,
+                yearsWorking: employee.yearsWorking,
+                originalSalary: employee.salary - 10000, 
+                newSalary: employee.salary,
+                bonusAmount: 10000
+            });
+        }
+    });
+   
+    return bonusedEmployees;
+}
+function main() {
+    console.log('=== Bonus Processing Script ===\n');
+   
+   
+    console.log('Reading files...');
+    const employees = readJSONFile(EMPLOYEES_FILE);
+    const bonuses = readJSONFile(BONUSES_FILE);
+   
+    console.log(`Loaded ${employees.length} employees`);
+    console.log(`Loaded ${Object.keys(bonuses).length} bonus entries\n`);
+   
+  
+    console.log('Processing bonuses...\n');
+    const updatedEmployees = processBonuses(employees, bonuses);
+   
+   
+    console.log('\nWriting updated employee data...');
+    writeJSONFile(EMPLOYEES_FILE, updatedEmployees);
+   
+
+    console.log('\n=== Bonus Summary ===');
+    const trueCount = Object.values(bonuses).filter(v => v === true).length;
+    const falseCount = Object.values(bonuses).filter(v => v === false).length;
+   
+    console.log(`Employees with $10,000 bonus: ${trueCount}`);
+    console.log(`Employees with $1,000 bonus: ${falseCount}`);
+    console.log(`Total bonus amount: $${(trueCount * 10000 + falseCount * 1000).toLocaleString()}`);
+
+    const bonusedList = getBonusedEmployees(updatedEmployees, bonuses);
+    console.log(`\nEmployees who received major bonus (true):`);
+    bonusedList.forEach(emp => {
+        console.log(`  - ${emp.fullname}: $${emp.originalSalary.toLocaleString()} → $${emp.newSalary.toLocaleString()}`);
+    });
+   
+    console.log('\n=== Process Complete ===');
+}
+module.exports = {
+    getBonusedEmployees,
+    processBonuses,
+    readJSONFile,
+    writeJSONFile
+};
+if (require.main === module) {
+    main();
+}
+/////////////////////////bonuses.json//////////////////////
+{
+  "1": true,
+  "2": false
+}
+//////////////////////employees//////////////////////////
+[
+  {
+    "id": "1",
+    "name": {
+      "first": "John",
+      "last": "Doe"
+    },
+    "salary": 80000,
+    "yearsWorking": 5
+  }
+]
+-------------------------------------------------------------------------URl(calculator)-------------------------------------------------------------------------------------
+/////////////////calculator.js///////////////////////
+function calculate(num1, num2, op) {
+  switch (op) {
+    case "add": return num1 + num2;
+    case "sub": return num1 - num2;
+    case "mul": return num1 * num2;
+    case "div": return num2 !== 0 ? num1 / num2 : "Error: Division by zero";
+    default: return "Invalid operation";
+  }
+}
+
+module.exports = calculate;
+//////////////logger.js/////////////////
+const fs = require("fs");
+
+function log(result) {
+  fs.appendFileSync("results.txt", result + "\n");
+}
+
+module.exports = log;
+///////////////server.js//////////////////////
+const http = require("http");
+const url = require("url");
+const calculate = require("./calculator");
+const log = require("./logger");
+
+const server = http.createServer((req, res) => {
+  const q = url.parse(req.url, true);
+
+  if (q.pathname === "/cal/") {
+    const num1 = parseFloat(q.query.num1);
+    const num2 = parseFloat(q.query.num2);
+    const op = q.query.op;
+
+    if (isNaN(num1) || isNaN(num2) || !op) {
+      return res.end("Use: /cal/?num1=&num2=&op=");
+    }
+
+    const result = calculate(num1, num2, op);
+    log(`num1=${num1}, num2=${num2}, op=${op}, result=${result}`);
+
+    return res.end("Result: " + result);
+  }
+
+  res.end("Calculator running…");
+});
+
+server.listen(3000, () => {
+  console.log("Server running at http://localhost:3000/");
+});
+//http://localhost:3000/cal/?num1=10&num2=5&op=add 
